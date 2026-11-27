@@ -94,7 +94,8 @@ The project provisions an AWS EC2 instance using Terraform.
 ---
 Terraform dynamically retrieves the latest Ubuntu 24.04 AMI using a data source.
 
-### CI/CD Pipeline Workflow
+
+### ⚙️ CI/CD Pipeline Workflow
 
 The Jenkins pipeline automates the Terraform workflow through the following stages:
 
@@ -151,3 +152,50 @@ Displays the output values of the provisioned infrastructure, such as:
 * EC2 Instance ID
 * Public IP Address
 * Instance Type
+
+### Security Best Practices Implemented
+
+* AWS authentication using IAM roles instead of hardcoded credentials.
+* Least-privilege IAM permissions.
+* Terraform remote state stored in Amazon S3.
+* S3 bucket versioning enabled.
+* S3 public access blocked.
+* Infrastructure changes reviewed through Terraform Plan.
+* Manual approval before Terraform Apply.
+* Sensitive Terraform files excluded from Git using .gitignore.
+
+### Terraform Remote State Management
+Terraform state is stored remotely in an Amazon S3 bucket.
+
+#### Backend Configuration
+```
+backend "s3" {
+  bucket       = "**bucket-name**"
+  key          = "terraform/terraform.tfstate"
+  region       = "***region**"
+  use_lockfile = true
+}
+```
+
+#### Benefits of Remote State
+
+* Centralized state management.
+* State accessible across different environments.
+* Prevents state loss from local machine failures.
+* Supports state locking to prevent concurrent modifications.
+* Enables collaboration between team members.
+
+### Prerequisites
+Before running the project, ensure the following tools are installed and configured:
+* AWS Account
+* EC2 instance with Jenkins installed
+* Terraform installed on the Jenkins server
+* AWS CLI installed
+* IAM role attached to the Jenkins EC2 instance
+* GitHub repository
+* GitHub webhook configured with Jenkins
+
+
+### Project Setup
+
+
