@@ -10,6 +10,31 @@ Infrastructure state is securely stored in an Amazon S3 backend, enabling centra
 
 ## Architecture
 
-The following diagram illustrates the automated infrastructure provisioning workflow using GitHub, Jenkins, Terraform, and AWS.
+```mermaid
+flowchart TD
+    A[Developer] -->|Git Push| B[GitHub Repository]
 
-![Architecture Diagram](docs/architecture.png)
+    B -->|Webhook| C[Jenkins Server on EC2]
+
+    C --> D[Terraform CI/CD Pipeline]
+
+    D --> E[Terraform Init]
+    E --> F[Terraform Validate]
+    F --> G[Terraform Format Check]
+    G --> H[Terraform Plan]
+
+    H --> I{Manual Approval}
+
+    I -->|Approved| J[Terraform Apply]
+    I -->|Rejected| K[Pipeline Aborted]
+
+    J --> L[AWS EC2 Instance]
+
+    C --> M[IAM Role]
+    M -->|Secure AWS Authentication| J
+
+    E --> N[S3 Remote State]
+    H --> N
+    J --> N
+
+
