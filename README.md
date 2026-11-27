@@ -51,6 +51,8 @@ flowchart TD
 ```text
   AWS-Infra-through-Terraform-with-Jenkins-CICD/
 │
+├── Terraform-drift-detection
+│   ├── Jenkinsfile.drift
 ├── Jenkinsfile
 ├── README.md
 ├── .gitignore
@@ -71,4 +73,81 @@ flowchart TD
 * AWS IAM ---------- Secure authentication and authorization
 * AWS S3  ---------- Remote Terraform state storage
 * Terraform -------- Infrastructure as Code
+* Jenkins ---------- CI/CD pipeline automation
+* GitHub ----------- Source code management
+* GitHub Webhooks -- Automated pipeline triggering
+* Ubuntu 24.04 ----- Operating system
 ---
+
+## Infrastructure Provisioned
+
+The project provisions an AWS EC2 instance using Terraform.
+
+#### EC2 Configuration
+---
+* Cloud Provider: AWS
+* Region: ap-south-1 (Mumbai)   // Choose according to your region
+* Operating System: Ubuntu 24.04 LTS
+* Instance Type: t2.micro
+* Provisioning Tool: Terraform
+* Resource Management: Infrastructure as Code
+---
+Terraform dynamically retrieves the latest Ubuntu 24.04 AMI using a data source.
+
+### CI/CD Pipeline Workflow
+
+The Jenkins pipeline automates the Terraform workflow through the following stages:
+
+#### 1. Checkout
+Retrieves the source code from the GitHub repository.
+
+#### 2. Terraform Version Check
+Verifies the installed Terraform version.
+
+#### 3. AWS Authentication
+Validates AWS authentication using the IAM role attached to the Jenkins EC2 instance.
+```
+aws sts get-caller-identity
+```
+This eliminates the need to store AWS Access Keys and Secret Keys in Jenkins.
+
+#### 4. Terraform Init
+Initializes the Terraform working directory and configures the remote backend.
+```
+terraform init
+```
+
+#### 5. Terraform Validate
+Validates the Terraform configuration files for syntax and configuration errors.
+```
+terraform validate
+```
+
+#### 6. Terraform Format Check
+Checks whether Terraform configuration files follow standard formatting.
+```
+terraform fmt -check -recursive
+```
+
+#### 7. Terraform Plan
+Generates an execution plan to preview infrastructure changes before deployment.
+```
+terraform plan
+```
+
+#### 8. Manual Approval
+Jenkins pauses the pipeline and waits for manual approval before proceeding with infrastructure changes.
+This provides an additional safety mechanism to review the Terraform plan before applying changes.
+
+#### 9. Terraform Apply
+After approval, Terraform applies the previously generated execution plan.
+```
+terraform apply
+```
+
+#### 10. Terraform Outputs
+Displays the output values of the provisioned infrastructure, such as:
+
+* EC2 Instance ID
+* Public IP Address
+* Instance Type
