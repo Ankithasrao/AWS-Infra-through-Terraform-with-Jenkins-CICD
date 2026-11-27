@@ -8,19 +8,8 @@ The pipeline follows Infrastructure as Code (IaC) best practices by validating T
 
 Infrastructure state is securely stored in an Amazon S3 backend, enabling centralized state management and supporting collaboration.
 
-### Architecture
+## Architecture
 
-flowchart TD
-    A[Developer] -->|Push Terraform Code| B[GitHub Repository]
-    B -->|Webhook Trigger| C[Jenkins CI/CD]
-    C --> D[Terraform Init]
-    D --> E[Terraform Validate]
-    E --> F[Terraform Format Check]
-    F --> G[Terraform Plan]
-    G --> H{Manual Approval}
-    H -->|Approved| I[Terraform Apply]
-    H -->|Rejected| J[Pipeline Aborted]
-    I --> K[AWS EC2 Infrastructure]
-    D --> L[Amazon S3 Remote State]
-    G --> L
-    I --> L
+The following diagram illustrates the automated infrastructure provisioning workflow using GitHub, Jenkins, Terraform, and AWS.
+
+![Architecture Diagram](docs/architecture.png)
